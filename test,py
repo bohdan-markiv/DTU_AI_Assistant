@@ -1,0 +1,11 @@
+# Assuming you saved the class in this file
+from openaiwrapper import OpenAIWrapper
+
+if __name__ == "__main__":
+    wrapper = OpenAIWrapper()
+    response = wrapper.write_message(
+        "Як безпечно зберігати акумулятори 21700, якщо вони заряджені до 4.25 В/комірку?")
+    if response:
+        print("\n✅ Test passed: Assistant responded.")
+    else:
+        print("\n❌ Test failed: No assistant response.")
