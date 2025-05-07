@@ -1,12 +1,9 @@
 from openai import OpenAI
-from dotenv import load_dotenv
-import os
+import streamlit as st
 import time
-# Load variables from .env
-load_dotenv()
 
 # Get API key from environment
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = st.secrets["OPENAI_API_KEY"]
 
 
 class OpenAIWrapper:
