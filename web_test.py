@@ -2,7 +2,7 @@ import streamlit as st
 from openaiwrapper import OpenAIWrapper
 
 st.set_page_config(page_title="AI Assistant", layout="centered")
-st.title("🤖 Chat with My Assistant")
+st.title("🤖 Chat with DTU Assistant. Слава Україні!")
 
 # Initialize wrapper and session state
 if "wrapper" not in st.session_state:
