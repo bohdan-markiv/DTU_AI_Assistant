@@ -1,6 +1,7 @@
 from openai import OpenAI
 import streamlit as st
 import time
+import json
 
 # Get API key from environment
 api_key = st.secrets["OPENAI_API_KEY"]
@@ -70,11 +71,12 @@ class OpenAIWrapper:
         if not self.thread_id:
             thread = self.client.beta.threads.create()
             self.thread_id = thread.id
-        vocab_glossary = {
-            "підари": "Військовий сленг українських солдатів для позначення російських військ у ворожому або зневажливому тоні. Не стосується ЛГБТ-людей.",
-            "хохлы": "Образлива етнічна лайка, яку використовують росіяни щодо українців, часто в контексті пропаганди або війни.",
-            "пташки": "Сленг українських військових для позначення дронів або БпЛА, зазвичай у жартівливому або тактичному контексті."
-        }
+        try:
+            with open("vocab.json", "r", encoding="utf-8") as f:
+                vocab_glossary = json.load(f)
+        except Exception as e:
+            print(f"Error loading glossary: {e}")
+            vocab_glossary = {}
 
         glossary_text = "\n".join(
             f"- **{k}**: {v}" for k, v in vocab_glossary.items())
