@@ -70,12 +70,24 @@ class OpenAIWrapper:
         if not self.thread_id:
             thread = self.client.beta.threads.create()
             self.thread_id = thread.id
+        vocab_glossary = {
+            "підари": "Військовий сленг українських солдатів для позначення російських військ у ворожому або зневажливому тоні. Не стосується ЛГБТ-людей.",
+            "хохлы": "Образлива етнічна лайка, яку використовують росіяни щодо українців, часто в контексті пропаганди або війни.",
+            "пташки": "Сленг українських військових для позначення дронів або БпЛА, зазвичай у жартівливому або тактичному контексті."
+        }
+
+        glossary_text = "\n".join(
+            f"- **{k}**: {v}" for k, v in vocab_glossary.items())
+        glossary_prompt = (
+            "Below is a glossary of terms. Please use them consistently and explain them if the user asks:\n\n"
+            + glossary_text + "\n\n"
+        )
 
         # Step 1: Create user message
         self.client.beta.threads.messages.create(
             thread_id=self.thread_id,
             role="user",
-            content=message
+            content=glossary_prompt + message
         )
 
         # Step 2: Run the assistant
