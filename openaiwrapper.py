@@ -11,6 +11,7 @@ api_key = st.secrets["OPENAI_API_KEY"]
 
 class OpenAIWrapper:
     def __init__(self):
+        print(api_key)
         self.client = OpenAI(api_key=api_key)
         self.default_assistant = "asst_6MXfCaEdIxKNbk6YwI0i5xcd"
         self.default_vector_storage = "vs_682f344359548191934c4c4c8fa9909b"
