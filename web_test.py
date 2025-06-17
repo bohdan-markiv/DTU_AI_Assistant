@@ -33,7 +33,7 @@ for idx, msg in enumerate(st.session_state.chat_history):
                 response = wrapper.write_message(
                     st.session_state.chat_history[-2]["content"])
                 if response:
-                    st.session_state.chat_history[idx]["content"] = response.value
+                    st.session_state.chat_history[idx]["content"] = response
                 else:
                     st.session_state.chat_history[idx]["content"] = "Sorry, I couldn't generate a response."
                 st.rerun()
