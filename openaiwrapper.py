@@ -172,10 +172,14 @@ class OpenAIWrapper:
 
         glossary_text = "\n".join(
             f"- **{k}**: {v}" for k, v in vocab_glossary.items())
+
         glossary_prompt = (
-            "Below is a glossary of terms. Please use them consistently and explain them if the user asks:\n\n"
+            "Below is a glossary of terms the user may use. These are for your understanding only. "
+            "You should NOT use these alternate terms in your own responses unless the user uses them first. "
+            "Default to professional, standard terminology in your replies.\n\n"
             + glossary_text + "\n\n"
         )
+
         # Step 1: Create user message
         self.client.beta.threads.messages.create(
             thread_id=self.thread_id,
