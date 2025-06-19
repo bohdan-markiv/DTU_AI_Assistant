@@ -11,7 +11,6 @@ api_key = st.secrets["OPENAI_API_KEY"]
 
 class OpenAIWrapper:
     def __init__(self):
-        print(api_key)
         self.client = OpenAI(api_key=api_key)
         self.default_assistant = "asst_6MXfCaEdIxKNbk6YwI0i5xcd"
         self.default_vector_storage = "vs_682f344359548191934c4c4c8fa9909b"
@@ -234,13 +233,22 @@ class OpenAIWrapper:
             )
 
             # Wait again for assistant to finish after using tool
+        start_time = time.time()
+        timeout_seconds = 30
+
         while True:
             run = self.client.beta.threads.runs.retrieve(
                 thread_id=self.thread_id,
                 run_id=run.id
             )
+
             if run.status in ["completed", "failed", "cancelled", "expired"]:
                 break
+
+            if time.time() - start_time > timeout_seconds:
+                print("Timeout: Assistant run did not finish within 30 seconds.")
+                break
+
             time.sleep(1)
 
         # Step 4: Get assistant's message
