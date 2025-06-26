@@ -193,50 +193,50 @@ class OpenAIWrapper:
             assistant_id=assistant_id
         )
 
-        # Step 3: Check for tool call
-        steps = self.client.beta.threads.runs.steps.list(
-            thread_id=self.thread_id,
-            run_id=run.id
-        ).data
+        # # # Step 3: Check for tool call
+        # # steps = self.client.beta.threads.runs.steps.list(
+        # #     thread_id=self.thread_id,
+        # #     run_id=run.id
+        # # ).data
 
-        tool_call_step = next(
-            (s for s in steps if s.type == "tool_calls"), None)
+        # # tool_call_step = next(
+        # #     (s for s in steps if s.type == "tool_calls"), None)
 
-        if tool_call_step:
-            tool_calls = tool_call_step.step_details.tool_calls
-            tool_outputs = []
+        # # if tool_call_step:
+        # #     tool_calls = tool_call_step.step_details.tool_calls
+        # #     tool_outputs = []
 
-            for tool_call in tool_calls:
-                name = tool_call.function.name
-                arguments = json.loads(tool_call.function.arguments)
+        # #     for tool_call in tool_calls:
+        # #         name = tool_call.function.name
+        # #         arguments = json.loads(tool_call.function.arguments)
 
-                if name == "perform_web_search":
-                    prompt = arguments["search_query"]
-                    result = self.perform_web_search(search_query=prompt)
+        # #         if name == "perform_web_search":
+        # #             prompt = arguments["search_query"]
+        # #             result = self.perform_web_search(search_query=prompt)
 
-                    tool_outputs.append({
-                        "tool_call_id": tool_call.id,
-                        "output": result
-                    })
-                elif name == "search_vector_db":
-                    prompt = arguments["search_query"]
-                    type = arguments["type"]
-                    result = self.perform_additional_db_search(
-                        search_query=prompt, type=type)
+        # #             tool_outputs.append({
+        # #                 "tool_call_id": tool_call.id,
+        # #                 "output": result
+        # #             })
+        # #         elif name == "search_vector_db":
+        # #             prompt = arguments["search_query"]
+        # #             type = arguments["type"]
+        # #             result = self.perform_additional_db_search(
+        # #                 search_query=prompt, type=type)
 
-                    tool_outputs.append({
-                        "tool_call_id": tool_call.id,
-                        "output": result
-                    })
+        # #             tool_outputs.append({
+        # #                 "tool_call_id": tool_call.id,
+        # #                 "output": result
+        # #             })
 
-            # Submit tool output to assistant
-            self.client.beta.threads.runs.submit_tool_outputs(
-                thread_id=self.thread_id,
-                run_id=run.id,
-                tool_outputs=tool_outputs
-            )
+        #     # Submit tool output to assistant
+        #     self.client.beta.threads.runs.submit_tool_outputs(
+        #         thread_id=self.thread_id,
+        #         run_id=run.id,
+        #         tool_outputs=tool_outputs
+        #     )
 
-            # Wait again for assistant to finish after using tool
+        # Wait again for assistant to finish after using tool
         start_time = time.time()
         timeout_seconds = 30
 
