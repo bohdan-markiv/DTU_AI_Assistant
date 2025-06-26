@@ -88,19 +88,33 @@ while i < len(st.session_state.chat_history):
             # Check if this is an assistant message and has a user message before it
             if msg["role"] == "assistant" and i > 0 and st.session_state.chat_history[i - 1]["role"] == "user":
                 pair_key = f"{i - 1}_{i}"
-                if pair_key not in st.session_state.saved_pairs:
-                    with st.expander("💬 Rate this response"):
-                        rating = st.slider(
-                            "Rate from 1 to 10", 1, 10, 7, key=f"rating_{i}")
-                        feedback = st.text_area(
-                            "Feedback (optional)", key=f"feedback_{i}")
-                        if st.button("✅ Save this exchange", key=f"save_btn_{i}"):
-                            prompt = st.session_state.chat_history[i - 1]["content"]
-                            response = msg["content"]
-                            timestamp = msg["time"]
-                            session_id = msg["session_id"]
-                            save_pair_to_gsheet(
-                                timestamp, session_id, prompt, response, rating, feedback)
-                            st.session_state.saved_pairs.add(pair_key)
-                            st.success("Saved to Google Sheets ✅")
+
+                # Only show the feedback block for assistant messages
+                if msg["role"] == "assistant" and i > 0 and st.session_state.chat_history[i - 1]["role"] == "user":
+
+                    if pair_key not in st.session_state.saved_pairs:
+                        with st.expander("💬 Rate this response", expanded=True):
+                            rating_key = f"rating_{i}"
+                            feedback_key = f"feedback_{i}"
+
+                            if rating_key not in st.session_state:
+                                st.session_state[rating_key] = 7
+                            if feedback_key not in st.session_state:
+                                st.session_state[feedback_key] = ""
+
+                            rating = st.slider(
+                                "Rate from 1 to 10", 1, 10, st.session_state[rating_key], key=rating_key)
+                            feedback = st.text_area(
+                                "Feedback (optional)", value=st.session_state[feedback_key], key=feedback_key)
+
+                            if st.button("✅ Save this exchange", key=f"save_btn_{i}"):
+                                prompt = st.session_state.chat_history[i - 1]["content"]
+                                response = msg["content"]
+                                timestamp = msg["time"]
+                                session_id = msg["session_id"]
+                                save_pair_to_gsheet(
+                                    timestamp, session_id, prompt, response, rating, feedback)
+                                st.session_state.saved_pairs.add(pair_key)
+                                st.success("Saved to Google Sheets ✅")
+
     i += 1
