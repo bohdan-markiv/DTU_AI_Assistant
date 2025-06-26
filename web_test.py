@@ -103,9 +103,9 @@ while i < len(st.session_state.chat_history):
                             #     st.session_state[feedback_key] = ""
 
                             rating = st.slider(
-                                "Rate from 1 to 10", 1, 10, st.session_state[rating_key], key=rating_key)
+                                "Rate from 1 to 10", 1, 10, 7, key=rating_key)
                             feedback = st.text_area(
-                                "Feedback (optional)", value=st.session_state[feedback_key], key=feedback_key)
+                                "Feedback (optional)", value="", key=feedback_key)
 
                             if st.button("✅ Save this exchange", key=f"save_btn_{i}"):
                                 prompt = st.session_state.chat_history[i - 1]["content"]
