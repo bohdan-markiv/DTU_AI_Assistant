@@ -97,10 +97,10 @@ while i < len(st.session_state.chat_history):
                             rating_key = f"rating_{i}"
                             feedback_key = f"feedback_{i}"
 
-                            if rating_key not in st.session_state:
-                                st.session_state[rating_key] = 7
-                            if feedback_key not in st.session_state:
-                                st.session_state[feedback_key] = ""
+                            # # if rating_key not in st.session_state:
+                            # #     st.session_state[rating_key] = 7
+                            # if feedback_key not in st.session_state:
+                            #     st.session_state[feedback_key] = ""
 
                             rating = st.slider(
                                 "Rate from 1 to 10", 1, 10, st.session_state[rating_key], key=rating_key)
