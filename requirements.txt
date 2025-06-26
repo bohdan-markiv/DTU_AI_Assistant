@@ -1,2 +1,5 @@
 streamlit
 openai>=1.2.0
+gspread
+pandas
+google
