@@ -3,11 +3,14 @@ from openaiwrapper import OpenAIWrapper
 import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
+import uuid
+from datetime import datetime
 # Set these
 # from the Google Sheets URL
 SHEET_ID = '1biUALdK33sgINUMLck2VM7QBZpZz-Uswz-Q3Hpvgda0'
 SHEET_NAME = 'Sheet1'  # or another sheet name in the file
-
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 # Authorize client
 
 
@@ -55,13 +58,25 @@ wrapper = st.session_state.wrapper
 user_input = st.chat_input("Ask me anything...")
 
 if user_input:
-    # Show user message immediately
-    st.session_state.chat_history.append(
-        {"role": "user", "content": user_input})
-    st.session_state.chat_history.append(
-        {"role": "assistant", "content": "__thinking__"})  # Temporary placeholder
+    now = datetime.now().isoformat(timespec="seconds")
+    session_id = st.session_state.session_id
 
-    # Force immediate re-render with the updated chat history
+    # Add user message
+    st.session_state.chat_history.append({
+        "role": "user",
+        "content": user_input,
+        "time": now,
+        "session_id": session_id,
+    })
+
+    # Placeholder assistant message
+    st.session_state.chat_history.append({
+        "role": "assistant",
+        "content": "__thinking__",
+        "time": now,  # Same time for response
+        "session_id": session_id,
+    })
+
     st.rerun()
 
 # Find and handle the thinking placeholder (if any)
@@ -84,7 +99,20 @@ non_placeholder_messages = [
 ]
 message_count = len(non_placeholder_messages)
 
-if message_count >= 1 and message_count % 2 == 0:
-    save_chat_to_gsheet(st.session_state.chat_history)
-    st.session_state.last_saved_at = message_count
-    st.toast("📤 Auto-saved chat to Google Sheets")
+if "last_saved_row" not in st.session_state:
+    st.session_state.last_saved_row = 0
+
+if message_count > st.session_state.last_saved_row:
+    new_messages = non_placeholder_messages[st.session_state.last_saved_row:]
+    sheet = get_gsheet_client().open_by_key(SHEET_ID).worksheet(SHEET_NAME)
+
+    for msg in new_messages:
+        role = msg["role"]
+        content = msg["content"]
+        timestamp = msg.get(
+            "time", datetime.now().isoformat(timespec="seconds"))
+        session_id = msg.get("session_id", st.session_state.session_id)
+        sheet.append_row([timestamp, session_id, role, content])
+
+    st.session_state.last_saved_row = message_count
+    st.toast("📤 Appended chat with metadata to Google Sheets")
