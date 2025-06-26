@@ -4,7 +4,6 @@ import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
 # Set these
-SERVICE_ACCOUNT_FILE = 'log.json'  # your downloaded JSON file
 # from the Google Sheets URL
 SHEET_ID = '1biUALdK33sgINUMLck2VM7QBZpZz-Uswz-Q3Hpvgda0'
 SHEET_NAME = 'Sheet1'  # or another sheet name in the file
@@ -14,9 +13,9 @@ SHEET_NAME = 'Sheet1'  # or another sheet name in the file
 
 def get_gsheet_client():
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-    credentials = Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=scopes
-    )
+    service_account_info = st.secrets["gcp_service_account"]
+    credentials = Credentials.from_service_account_info(
+        service_account_info, scopes=scopes)
     return gspread.authorize(credentials)
 
 # Save to Google Sheet
