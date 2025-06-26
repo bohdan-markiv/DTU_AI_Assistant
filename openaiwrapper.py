@@ -12,8 +12,8 @@ api_key = st.secrets["OPENAI_API_KEY"]
 class OpenAIWrapper:
     def __init__(self):
         self.client = OpenAI(api_key=api_key)
-        self.default_assistant = "asst_6MXfCaEdIxKNbk6YwI0i5xcd"
-        self.default_vector_storage = "vs_682f344359548191934c4c4c8fa9909b"
+        self.default_assistant = "asst_1OPu6ADtBcHwnGPFGacuzMma"
+        self.default_vector_storage = "vs_685d88cab14881918083043610feb1d8"
         self.thread_id = None
 
     def create_assistant(self, instructions, name, model="gpt-4.1-mini", tools=[{"type": "file_search"}]):
