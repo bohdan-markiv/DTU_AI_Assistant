@@ -32,17 +32,17 @@ def get_gsheet_client():
 # --- Save Prompt-Response Pair to Sheets ---
 
 
-def save_pair_to_gsheet(timestamp, session_id, prompt, response, rating, feedback):
+def save_pair_to_gsheet(timestamp, session_id, prompt, response, rating, preferred_answer):
     sheet = get_gsheet_client().open_by_key(SHEET_ID).worksheet(SHEET_NAME)
 
     # Add headers if the sheet is empty
     if sheet.row_count == 0 or not sheet.get_all_values():
         sheet.append_row(["Timestamp", "Session ID", "Prompt",
-                         "Response", "Rating", "Feedback"])
+                         "Response", "Rating", "Preferred Answer"])
 
     # Then append the actual row
     sheet.append_row([timestamp, session_id, prompt,
-                     response, rating, feedback])
+                     response, rating, preferred_answer])
 
 
 # --- UI Setup ---
@@ -92,15 +92,15 @@ while i < len(st.session_state.chat_history):
                     with st.expander("💬 Rate this response"):
                         rating = st.slider(
                             "Rate from 1 to 10", 1, 10, 7, key=f"rating_{i}")
-                        feedback = st.text_area(
-                            "Preffered Answer (optional)", key=f"feedback_{i}")
+                        preferred_answer = st.text_area(
+                            "Preffered Answer (optional)", key=f"preferred_answer_{i}")
                         if st.button("✅ Save this exchange", key=f"save_btn_{i}"):
                             prompt = st.session_state.chat_history[i - 1]["content"]
                             response = msg["content"]
                             timestamp = msg["time"]
                             session_id = msg["session_id"]
                             save_pair_to_gsheet(
-                                timestamp, session_id, prompt, response, rating, feedback)
+                                timestamp, session_id, prompt, response, rating, preferred_answer)
                             st.session_state.saved_pairs.add(pair_key)
                             st.success("Saved to Google Sheets ✅")
     i += 1
