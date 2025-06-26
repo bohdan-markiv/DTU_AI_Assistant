@@ -93,7 +93,7 @@ while i < len(st.session_state.chat_history):
                         rating = st.slider(
                             "Rate from 1 to 10", 1, 10, 7, key=f"rating_{i}")
                         preferred_answer = st.text_area(
-                            "Preffered Answer (optional)", key=f"preferred_answer_{i}")
+                            "Preferred Answer (optional)", key=f"preferred_answer_{i}")
                         if st.button("✅ Save this exchange", key=f"save_btn_{i}"):
                             prompt = st.session_state.chat_history[i - 1]["content"]
                             response = msg["content"]
