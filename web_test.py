@@ -34,6 +34,13 @@ def get_gsheet_client():
 
 def save_pair_to_gsheet(timestamp, session_id, prompt, response, rating, feedback):
     sheet = get_gsheet_client().open_by_key(SHEET_ID).worksheet(SHEET_NAME)
+
+    # Add headers if the sheet is empty
+    if sheet.row_count == 0 or not sheet.get_all_values():
+        sheet.append_row(["Timestamp", "Session ID", "Prompt",
+                         "Response", "Rating", "Feedback"])
+
+    # Then append the actual row
     sheet.append_row([timestamp, session_id, prompt,
                      response, rating, feedback])
 
