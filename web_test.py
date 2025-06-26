@@ -85,7 +85,7 @@ non_placeholder_messages = [
 ]
 message_count = len(non_placeholder_messages)
 
-if message_count >= 1 and message_count % 10 == 0 and st.session_state.last_saved_at != message_count:
+if message_count >= 1 and message_count % 2 == 0 and st.session_state.last_saved_at != message_count:
     save_chat_to_gsheet(st.session_state.chat_history)
     st.session_state.last_saved_at = message_count
     st.toast("📤 Auto-saved chat to Google Sheets")
